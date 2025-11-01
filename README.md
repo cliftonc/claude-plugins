@@ -185,7 +185,7 @@ claude-plugins/
 4. Update `.claude-plugin/marketplace.json`:
    ```json
    {
-     "skills": [
+     "plugins": [
        {
          "name": "new-skill-name",
          "source": "./skills/new-skill-name",
@@ -237,7 +237,7 @@ claude-plugins/
 
 3. Create `commands/new-command/README.md` for users
 
-4. Update `.claude-plugin/marketplace.json` `commands` array
+4. Update `.claude-plugin/marketplace.json` `plugins` array (add to the same array as skills)
 
 5. Test locally:
    ```bash

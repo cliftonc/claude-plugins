@@ -6,11 +6,9 @@
   },
   "metadata": {
     "description": "Personal Claude Code marketplace with TypeScript quality tools, architectural review commands, and development utilities",
-    "version": "1.0.0",
-    "skillsRoot": "./skills",
-    "commandsRoot": "./commands"
+    "version": "1.0.0"
   },
-  "skills": [
+  "plugins": [
     {
       "name": "typescript-quality",
       "source": "./skills/typescript-quality",
@@ -21,9 +19,7 @@
         "email": "clifton.cunningham@gmail.com"
       },
       "keywords": ["typescript", "quality", "testing", "linting", "typecheck", "pre-commit"]
-    }
-  ],
-  "commands": [
+    },
     {
       "name": "ts-review",
       "source": "./commands/ts-review",
