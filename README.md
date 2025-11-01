@@ -1,76 +1,102 @@
-# Clifton's Claude Code Plugins
+# Clifton's Claude Code Marketplace
 
-Personal marketplace of Claude Code skills and utilities for software development.
+Personal collection of Claude Code **skills** and **commands** for TypeScript development, code quality, and architectural review.
 
 ## Overview
 
-This marketplace provides reusable Claude Code skills focused on code quality, development workflows, and productivity enhancements. All skills are designed to work seamlessly across projects.
+This marketplace provides reusable Claude Code skills and slash commands focused on:
 
-## Installation
+- **Code Quality**: Automated type checking, linting, building, and testing
+- **Architectural Review**: Deep analysis of TypeScript code structure and design patterns
+- **Development Workflows**: Pragmatic tools for day-to-day development
 
-Add this marketplace to any Claude Code project:
+## What's Included
 
-```bash
-/plugin marketplace add cliftonc/claude-plugins
-```
+### Skills (Auto-Activated)
 
-Or for local development:
+Skills run automatically based on context (e.g., when you modify TypeScript files).
 
-```bash
-/plugin marketplace add ~/work/claude-plugins
-```
-
-## Available Skills
-
-### TypeScript Quality (`typescript-quality`)
-
-Enforces TypeScript quality standards by running comprehensive checks before commits.
-
+#### `typescript-quality` - TypeScript Quality Enforcement
 **Version:** 1.0.0
 
-**What it does:**
-- Runs type checking (`pnpm typecheck`)
-- Runs linting (`pnpm lint`)
-- Runs build (`pnpm build`)
-- Runs tests (`pnpm test`)
+Automatically enforces TypeScript quality standards when creating or modifying `.ts`/`.tsx` files.
 
-**Install:**
-```bash
-/plugin install typescript-quality@cliftonc-plugins
-```
+**What it does:**
+- ✓ Type checking (`pnpm typecheck`)
+- ✓ Linting (`pnpm lint`)
+- ✓ Building (`pnpm build`)
+- ✓ Testing (`pnpm test`)
+
+**When it activates:**
+- Creating/modifying TypeScript files
+- Before git commits
+- When quality checks are mentioned
 
 **Documentation:** [skills/typescript-quality/README.md](./skills/typescript-quality/README.md)
 
-## Usage
+### Commands (Manual Invocation)
 
-### Browse Available Skills
+Slash commands you invoke explicitly for specific tasks.
 
+#### `/ts-review` - TypeScript Architectural Review
+**Version:** 1.0.0
+
+Performs comprehensive architectural review of uncommitted TypeScript code.
+
+**What it does:**
+1. Runs all quality checks (same as `typescript-quality` skill)
+2. Analyzes architecture: SOLID principles, design patterns, code structure
+3. Reviews type safety, error handling, testability
+4. Provides concrete, pragmatic suggestions with examples
+
+**Usage:**
 ```bash
-/plugin
+/ts-review
 ```
 
-### Install a Skill
+**When to use:**
+- Before committing significant TypeScript changes
+- When refactoring code
+- For architectural guidance on new features
+- To get concrete improvement suggestions
 
+**Documentation:** [commands/ts-review/README.md](./commands/ts-review/README.md)
+
+## Installation
+
+### Option 1: Manual Installation (Recommended)
+
+Copy skills or commands to your project's `.claude/` directory:
+
+**For skills:**
 ```bash
-/plugin install <skill-name>@cliftonc-plugins
+# Copy the entire skill directory
+cp -r skills/typescript-quality ~/.claude/skills/
+
+# Or copy to a specific project
+cp -r skills/typescript-quality /path/to/project/.claude/skills/
 ```
 
-### List Installed Skills
-
+**For commands:**
 ```bash
-/plugin list
+# Copy command file to your project
+cp commands/ts-review/COMMAND.md ~/.claude/commands/ts-review.md
+
+# Or to a specific project
+cp commands/ts-review/COMMAND.md /path/to/project/.claude/commands/ts-review.md
 ```
 
-### Update Marketplace
+### Option 2: Clone and Link
+
+Clone this repository and reference it from your projects:
 
 ```bash
-/plugin marketplace update
-```
+# Clone the marketplace
+git clone https://github.com/cliftonc/claude-plugins.git ~/claude-plugins
 
-### Remove a Skill
-
-```bash
-/plugin remove <skill-name>
+# Symlink to your global Claude config
+ln -s ~/claude-plugins/skills/typescript-quality ~/.claude/skills/typescript-quality
+ln -s ~/claude-plugins/commands/ts-review/COMMAND.md ~/.claude/commands/ts-review.md
 ```
 
 ## Features
@@ -90,6 +116,23 @@ Skills in this marketplace are designed for projects using:
 - **Modern linters** (Biome, ESLint, etc.)
 - **Vitest** or Jest for testing
 
+## Marketplace Structure
+
+```
+claude-plugins/
+├── .claude-plugin/
+│   └── marketplace.json       # Marketplace configuration
+├── skills/                     # Auto-activated skills
+│   └── typescript-quality/
+│       ├── SKILL.md           # Skill definition with frontmatter
+│       └── README.md          # User documentation
+├── commands/                   # Slash commands
+│   └── ts-review/
+│       ├── COMMAND.md         # Command definition with frontmatter
+│       └── README.md          # User documentation
+└── README.md                   # This file
+```
+
 ## Development
 
 ### Adding New Skills
@@ -99,35 +142,77 @@ Skills in this marketplace are designed for projects using:
    mkdir -p skills/new-skill-name
    ```
 
-2. Create `SKILL.md` with frontmatter and instructions
+2. Create `skills/new-skill-name/SKILL.md` with frontmatter:
+   ```markdown
+   ---
+   name: new-skill-name
+   description: Brief description of when and how the skill activates
+   ---
 
-3. Update `.claude-plugin/marketplace.json`:
-   - Add entry to `plugins` array
-   - Include name, source, description, version, keywords
+   # Skill Title
 
-4. Test locally:
-   ```bash
-   /plugin marketplace add ~/work/claude-plugins
-   /plugin install new-skill-name@cliftonc-plugins
+   Instructions for Claude on how to use this skill...
    ```
 
-5. Commit and push:
-   ```bash
-   git add .
-   git commit -m "feat: add new-skill-name v1.0.0"
-   git push origin main
+3. Create `skills/new-skill-name/README.md` for users
+
+4. Update `.claude-plugin/marketplace.json`:
+   ```json
+   {
+     "skills": [
+       {
+         "name": "new-skill-name",
+         "source": "./skills/new-skill-name",
+         "description": "...",
+         "version": "1.0.0",
+         "author": {...},
+         "keywords": [...]
+       }
+     ]
+   }
    ```
 
-### Updating Existing Skills
+5. Test locally by copying to `.claude/skills/`
 
-1. Modify the SKILL.md file
-2. Bump version in `marketplace.json`
-3. Commit with clear message:
+6. Commit and push
+
+### Adding New Commands
+
+1. Create command directory:
    ```bash
-   git commit -m "fix: improve typescript-quality error handling (v1.0.1)"
+   mkdir -p commands/new-command
    ```
-4. Push to GitHub
-5. Users update with: `/plugin marketplace update`
+
+2. Create `commands/new-command/COMMAND.md` with frontmatter:
+   ```markdown
+   ---
+   name: new-command
+   description: What this command does
+   ---
+
+   # Command Title
+
+   Instructions for Claude on how to execute this command...
+   ```
+
+3. Create `commands/new-command/README.md` for users
+
+4. Update `.claude-plugin/marketplace.json` `commands` array
+
+5. Test locally by copying to `.claude/commands/new-command.md`
+
+6. Commit and push
+
+### Updating Existing Skills or Commands
+
+1. Modify the SKILL.md or COMMAND.md file
+2. Update README.md if user-facing changes
+3. Bump version in `marketplace.json`
+4. Commit with semantic versioning message:
+   ```bash
+   git commit -m "feat: add new feature (v1.1.0)"
+   git commit -m "fix: bug fix (v1.0.1)"
+   ```
 
 ## Versioning
 
