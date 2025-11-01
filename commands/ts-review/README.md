@@ -174,15 +174,17 @@ The review is **pragmatic, not pedantic**:
 
 ## Installation
 
-Copy the command file to your project:
+Install from the cliftonc-plugins marketplace:
 
 ```bash
-# Global installation
-cp commands/ts-review/COMMAND.md ~/.claude/commands/ts-review.md
+# First, add the marketplace (if not already added)
+/plugin marketplace add cliftonc/claude-plugins
 
-# Project-specific installation
-cp commands/ts-review/COMMAND.md /path/to/project/.claude/commands/ts-review.md
+# Then install the command
+/plugin install ts-review@cliftonc-plugins
 ```
+
+The `/ts-review` command will be immediately available in your Claude Code session.
 
 ## Requirements
 

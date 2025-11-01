@@ -64,39 +64,65 @@ Performs comprehensive architectural review of uncommitted TypeScript code.
 
 ## Installation
 
-### Option 1: Manual Installation (Recommended)
+This is a Claude Code plugin marketplace. Use the built-in `/plugin` commands to install skills and commands.
 
-Copy skills or commands to your project's `.claude/` directory:
+### Step 1: Add the Marketplace
 
-**For skills:**
+Add this marketplace to your Claude Code configuration:
+
 ```bash
-# Copy the entire skill directory
-cp -r skills/typescript-quality ~/.claude/skills/
+# From GitHub (recommended)
+/plugin marketplace add cliftonc/claude-plugins
 
-# Or copy to a specific project
-cp -r skills/typescript-quality /path/to/project/.claude/skills/
+# Or for local development
+/plugin marketplace add ~/work/claude-plugins
 ```
 
-**For commands:**
-```bash
-# Copy command file to your project
-cp commands/ts-review/COMMAND.md ~/.claude/commands/ts-review.md
+### Step 2: Browse Available Plugins
 
-# Or to a specific project
-cp commands/ts-review/COMMAND.md /path/to/project/.claude/commands/ts-review.md
+See what's available in this marketplace:
+
+```bash
+/plugin
 ```
 
-### Option 2: Clone and Link
+This shows all available skills and commands from registered marketplaces.
 
-Clone this repository and reference it from your projects:
+### Step 3: Install What You Need
+
+Install individual skills or commands:
 
 ```bash
-# Clone the marketplace
-git clone https://github.com/cliftonc/claude-plugins.git ~/claude-plugins
+# Install the TypeScript quality skill
+/plugin install typescript-quality@cliftonc-plugins
 
-# Symlink to your global Claude config
-ln -s ~/claude-plugins/skills/typescript-quality ~/.claude/skills/typescript-quality
-ln -s ~/claude-plugins/commands/ts-review/COMMAND.md ~/.claude/commands/ts-review.md
+# Install the TypeScript review command
+/plugin install ts-review@cliftonc-plugins
+```
+
+Once installed, skills auto-activate based on context, and commands are available via their slash command (e.g., `/ts-review`).
+
+## Managing Plugins
+
+### List Installed Plugins
+
+```bash
+/plugin list
+```
+
+### Update from Marketplace
+
+Get the latest versions:
+
+```bash
+/plugin marketplace update
+```
+
+### Remove a Plugin
+
+```bash
+/plugin remove typescript-quality
+/plugin remove ts-review
 ```
 
 ## Features
@@ -172,9 +198,23 @@ claude-plugins/
    }
    ```
 
-5. Test locally by copying to `.claude/skills/`
+5. Test locally:
+   ```bash
+   /plugin marketplace add ~/work/claude-plugins
+   /plugin install new-skill-name@cliftonc-plugins
+   ```
 
-6. Commit and push
+6. Commit and push:
+   ```bash
+   git add .
+   git commit -m "feat: add new-skill-name v1.0.0"
+   git push origin main
+   ```
+
+7. Users update with:
+   ```bash
+   /plugin marketplace update
+   ```
 
 ### Adding New Commands
 
@@ -199,9 +239,18 @@ claude-plugins/
 
 4. Update `.claude-plugin/marketplace.json` `commands` array
 
-5. Test locally by copying to `.claude/commands/new-command.md`
+5. Test locally:
+   ```bash
+   /plugin marketplace add ~/work/claude-plugins
+   /plugin install new-command@cliftonc-plugins
+   ```
 
-6. Commit and push
+6. Commit and push:
+   ```bash
+   git add .
+   git commit -m "feat: add new-command v1.0.0"
+   git push origin main
+   ```
 
 ### Updating Existing Skills or Commands
 
