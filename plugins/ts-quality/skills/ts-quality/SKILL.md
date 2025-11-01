@@ -164,7 +164,7 @@ pnpm typecheck && pnpm lint && pnpm build
 
 This skill is optimized for pnpm workspace monorepos. It assumes:
 
-- Package-level scripts: `typecheck`, `lint`, `build`, `test` in each package
+- Package-level scripts: `typecheck`, `lint`, `build` in each package
 - Workspace-level scripts: Same commands at the root run across all packages
 - Fast feedback: Package-level checks run faster than workspace-level
 
@@ -173,16 +173,15 @@ This skill is optimized for pnpm workspace monorepos. It assumes:
 ```bash
 # Package-level (fast, targeted)
 cd packages/your-package
-pnpm typecheck && pnpm lint && pnpm build && pnpm test
+pnpm typecheck && pnpm lint && pnpm build
 
 # Workspace-level (comprehensive, slower)
-pnpm typecheck && pnpm lint && pnpm build && pnpm test
+pnpm typecheck && pnpm lint && pnpm build
 
 # Individual checks
 pnpm typecheck  # Type checking only
 pnpm lint       # Linting only
 pnpm build      # Build only
-pnpm test       # Tests only
 ```
 
 ## Error Handling
@@ -192,7 +191,6 @@ When errors occur:
 1. **Type Errors**: Show the file, line number, and error message
 2. **Lint Errors**: Show the file, line number, rule violated, and how to fix
 3. **Build Errors**: Show compilation errors with context
-4. **Test Failures**: Show which tests failed and why
 
 Always provide actionable information to help fix the errors.
 
@@ -213,10 +211,8 @@ This skill requires projects to have:
 - **TypeScript** installed and configured
 - **Linter** (Biome, ESLint, or similar) configured
 - **Build system** configured (tsup, tsc, vite, etc.)
-- **Test framework** configured (Vitest, Jest, etc.)
 
 Package scripts must be defined:
 - `typecheck`: TypeScript type checking
 - `lint`: Code linting
 - `build`: Project build process
-- `test`: Test suite execution

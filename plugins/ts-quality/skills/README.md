@@ -11,7 +11,6 @@ This Claude Code skill automatically ensures your TypeScript code meets quality 
 1. **Type Checking** (`pnpm typecheck`) - Zero TypeScript type errors
 2. **Linting** (`pnpm lint`) - Code style consistency
 3. **Building** (`pnpm build`) - Successful compilation
-4. **Testing** (`pnpm test`) - All tests pass
 
 ## Installation
 
@@ -58,7 +57,7 @@ You can also explicitly trigger it:
 The skill will automatically run this command sequence:
 
 ```bash
-pnpm typecheck && pnpm lint && pnpm build && pnpm test
+pnpm typecheck && pnpm lint && pnpm build
 ```
 
 All checks must pass with zero errors.
@@ -72,8 +71,7 @@ Your project must have these pnpm scripts configured:
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
-    "build": "tsup",
-    "test": "vitest run"
+    "build": "tsup"
   }
 }
 ```

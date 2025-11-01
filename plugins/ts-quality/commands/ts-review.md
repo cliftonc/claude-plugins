@@ -16,7 +16,6 @@ When invoked, this command:
    - Type checking (`pnpm typecheck`)
    - Linting (`pnpm lint`)
    - Building (`pnpm build`)
-   - Testing (`pnpm test`)
 3. **Performs Architectural Review** - Analyzes code structure, design patterns, and provides concrete improvements
 4. **Delivers Pragmatic Suggestions** - Actionable recommendations, not theoretical perfection
 
@@ -54,7 +53,7 @@ If no TypeScript files are uncommitted, report this and exit:
 Execute quality checks sequentially, stopping at first failure:
 
 ```bash
-pnpm typecheck && pnpm lint && pnpm build && pnpm test
+pnpm typecheck && pnpm lint && pnpm build
 ```
 
 **If any check fails:**
