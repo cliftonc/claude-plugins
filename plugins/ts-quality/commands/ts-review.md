@@ -36,8 +36,8 @@ When this command is invoked, follow these steps:
 **Step 1: Find changed TypeScript files**
 
 ```bash
-# Get list of modified/staged TypeScript files
-git diff HEAD --name-only | grep -E '\.(ts|tsx)$'
+# Get list of modified TypeScript files (both staged and unstaged)
+{ git diff --name-only; git diff --cached --name-only; } | sort -u | grep -E '\.(ts|tsx)$'
 
 # Also get untracked TypeScript files
 git ls-files --others --exclude-standard | grep -E '\.(ts|tsx)$'
@@ -47,18 +47,23 @@ git ls-files --others --exclude-standard | grep -E '\.(ts|tsx)$'
 - Report: "No uncommitted TypeScript files found. Nothing to review."
 - Exit
 
-**Step 2: Get the diff for all TypeScript files**
+**Step 2: Get the diff for all changed files**
 
 ```bash
-# Get complete diff for all changed TypeScript files
-git diff HEAD
+# Get unstaged changes
+git diff
+
+# Get staged changes
+git diff --cached
 ```
+
+Both outputs will be used together for the review.
 
 **Step 3: Check diff size and decide approach**
 
 ```bash
-# Count lines in TypeScript-only diff
-git diff HEAD | wc -l
+# Count total lines in both staged and unstaged diffs
+{ git diff; git diff --cached; } | wc -l
 ```
 
 **If diff is 1000 lines or less:**
@@ -94,28 +99,30 @@ pnpm typecheck && pnpm lint && pnpm build
 
 ### 3. Analyze Changes from Git Diff
 
-**Use the git diff output from Step 1** - DO NOT read files individually unless they are untracked.
+**Use the git diff outputs from Step 1** - DO NOT read files individually unless they are untracked.
 
-The diff output from `git diff HEAD` shows:
+The diff outputs from `git diff` (unstaged) and `git diff --cached` (staged) show:
 - Which files changed
 - Exact line changes (additions/deletions with + and - markers)
 - Context around each change
 - Full file paths
 
 **For existing modified files:**
-- Work exclusively with the diff output
-- DO NOT use the Read tool - the diff has all the information needed
+- Work exclusively with the diff outputs (both staged and unstaged)
+- DO NOT use the Read tool - the diffs have all the information needed
 - Focus on the `+` lines (additions) and `-` lines (deletions)
+- Analyze both staged and unstaged changes together
 
 **For untracked files** (if any were found in step 1):
 - ONLY for these completely new files, use the Read tool
 - These don't have diff output since they're not in git yet
 
 **Build understanding:**
-- Analyze the changed/added code in context
+- Analyze the changed/added code in context from the diff output
 - Understand what functionality is being added/modified/removed
 - Identify architectural patterns in the changes
 - Look for issues in the actual changes, not the entire codebase
+- Remember: the diff shows ONLY what changed, which is what we want to review
 
 ### 3a. Handle Large Changesets with AskUserQuestion Tool
 
