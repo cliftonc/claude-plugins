@@ -31,7 +31,7 @@ Run this command before committing TypeScript changes to ensure both quality and
 
 When this command is invoked, follow these steps:
 
-### 1. Get All Uncommitted TypeScript Changes
+### 1. Identify Changed Files and Check Size
 
 **Step 1: Find changed TypeScript files**
 
@@ -47,38 +47,24 @@ git ls-files --others --exclude-standard | grep -E '\.(ts|tsx)$'
 - Report: "No uncommitted TypeScript files found. Nothing to review."
 - Exit
 
-**Step 2: Get the diff for all changed files**
+**Step 2: Check total diff size (for planning purposes)**
 
 ```bash
-# Get unstaged changes
-git diff
-
-# Get staged changes
-git diff --cached
-```
-
-Both outputs will be used together for the review.
-
-**Step 3: Check diff size and decide approach**
-
-```bash
-# Count total lines in both staged and unstaged diffs
+# Count total lines changed (gives us a sense of changeset size)
 { git diff; git diff --cached; } | wc -l
 ```
 
-**If diff is 1000 lines or less:**
-- Proceed with full review using the complete diff output
-- The diff shows exactly what changed, which is more efficient than reading entire files
-
 **If diff is larger than 1000 lines:**
-- Report: "Large changeset detected (X lines). This is too large to review in one pass."
-- List all changed TypeScript files with their individual line counts
+- Report: "Large changeset detected (X lines across Y TypeScript files). This review may take a while."
+- List all changed TypeScript files
 - **Use the AskUserQuestion tool** to let the user choose:
-  - Option 1: "Review all files (may take longer)"
+  - Option 1: "Review all files now"
   - Option 2: "Let me select specific files to review"
   - Option 3: "Review files one at a time"
 - Based on user's choice, proceed accordingly
-- For batched reviews, aim for ~300-500 lines per batch
+
+**If diff is 1000 lines or less:**
+- Proceed with full review of all changed TypeScript files
 
 ### 2. Run Quality Checks (ZERO TOLERANCE)
 
@@ -97,69 +83,20 @@ pnpm typecheck && pnpm lint && pnpm build
 - Report: "✓ All quality checks passed"
 - Proceed to architectural review
 
-### 3. Analyze Changes from Git Diff
+### 3. Read Changed Files
 
-**Use the git diff outputs from Step 1** - DO NOT read files individually unless they are untracked.
+**Use the Read tool to analyze all changed TypeScript files** from step 1.
 
-The diff outputs from `git diff` (unstaged) and `git diff --cached` (staged) show:
-- Which files changed
-- Exact line changes (additions/deletions with + and - markers)
-- Context around each change
-- Full file paths
-
-**For existing modified files:**
-- Work exclusively with the diff outputs (both staged and unstaged)
-- DO NOT use the Read tool - the diffs have all the information needed
-- Focus on the `+` lines (additions) and `-` lines (deletions)
-- Analyze both staged and unstaged changes together
-
-**For untracked files** (if any were found in step 1):
-- ONLY for these completely new files, use the Read tool
-- These don't have diff output since they're not in git yet
+For each file in the list:
+- Use the Read tool to get the current file contents
+- Analyze the code structure, patterns, and potential issues
+- Focus your review on understanding what changed and why
 
 **Build understanding:**
-- Analyze the changed/added code in context from the diff output
-- Understand what functionality is being added/modified/removed
-- Identify architectural patterns in the changes
-- Look for issues in the actual changes, not the entire codebase
-- Remember: the diff shows ONLY what changed, which is what we want to review
-
-### 3a. Handle Large Changesets with AskUserQuestion Tool
-
-**If the diff was larger than 1000 lines (from step 1):**
-
-Use the **AskUserQuestion tool** to let the user choose how to proceed:
-
-```javascript
-AskUserQuestion({
-  questions: [{
-    question: "The changeset is large (X lines across Y files). How would you like to proceed?",
-    header: "Review Strategy",
-    multiSelect: false,
-    options: [
-      {
-        label: "Review all changes now",
-        description: "Comprehensive review of all changes (may take longer)"
-      },
-      {
-        label: "Let me select specific files",
-        description: "I'll choose which files to review"
-      },
-      {
-        label: "Review files one at a time",
-        description: "Go through each file sequentially for focused review"
-      }
-    ]
-  }]
-})
-```
-
-**Based on the user's response:**
-- **"Review all changes now"**: Proceed with full diff analysis
-- **"Let me select specific files"**: Ask another question with file options
-- **"Review files one at a time"**: Process files sequentially with summaries between each
-
-**Important:** Always use the AskUserQuestion tool for user choices. Never just ask in text - use the tool for proper interactive UI.
+- Understand what functionality is being added/modified in each file
+- Identify architectural patterns in the code
+- Look for potential issues in the implementation
+- Consider how changes fit into the broader codebase structure
 
 ### 4. Perform Architectural Review
 
