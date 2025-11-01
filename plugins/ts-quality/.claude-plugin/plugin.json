@@ -1,6 +1,6 @@
 {
   "name": "ts-quality",
-  "description": "TypeScript quality enforcement with automated checks and architectural review. Includes auto-activated quality skill and /ts-review command for comprehensive code analysis.",
+  "description": "TypeScript quality enforcement with instant file-scoped checks and architectural review. Auto-activated skill runs typecheck and lint after each file write. Includes /ts-review command for comprehensive code analysis.",
   "version": "1.0.0",
   "author": {
     "name": "Clifton Cunningham",
@@ -10,7 +10,6 @@
   "keywords": [
     "typescript",
     "quality",
-    "testing",
     "linting",
     "typecheck",
     "pre-commit",
@@ -19,7 +18,9 @@
     "refactoring",
     "solid",
     "design-patterns",
-    "code-quality"
+    "code-quality",
+    "instant-feedback",
+    "file-scoped"
   ],
   "commands": "./commands/",
   "skills": [

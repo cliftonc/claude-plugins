@@ -19,27 +19,30 @@ A comprehensive TypeScript quality plugin that includes both an auto-activated s
 
 #### Auto-Activated Skill
 
-Automatically enforces TypeScript quality standards when creating or modifying `.ts`/`.tsx` files.
+Instantly runs quality checks **after each TypeScript file write** for immediate feedback.
 
 **What it does:**
-- ✓ Type checking (`pnpm typecheck`)
-- ✓ Linting (`pnpm lint`)
-- ✓ Building (`pnpm build`)
-- ✓ Testing (`pnpm test`)
+- ✓ File-scoped type checking (`pnpm exec tsc --noEmit <file>`)
+- ✓ File-scoped linting (`pnpm lint <file>`)
+- 📢 Announces checks with: `🔍 Checking {filename}...`
+- ✅ Reports results: `✓ {filename}: typecheck and lint passed`
+
+**Key features:**
+- **Instant feedback**: Runs immediately after writing/editing files
+- **File-scoped**: Only checks the changed file, not entire project
+- **Fast**: Quick targeted checks instead of slow project-wide scans
+- **Visible**: Announces when running and reports clear results
 
 **When it activates:**
-- Creating/modifying TypeScript files
-- Before git commits
-- When quality checks are mentioned
-
-**Documentation:** [plugins/ts-quality/skills/README.md](./plugins/ts-quality/skills/README.md)
+- Immediately after writing or editing any `.ts` or `.tsx` file
+- When quality checks, typecheck, or lint are mentioned
 
 #### `/ts-review` Command
 
 Performs comprehensive architectural review of uncommitted TypeScript code.
 
 **What it does:**
-1. Runs all quality checks (same as the auto-activated skill)
+1. Runs quality checks: typecheck and lint
 2. Analyzes architecture: SOLID principles, design patterns, code structure
 3. Reviews type safety, error handling, testability
 4. Provides concrete, pragmatic suggestions with examples
@@ -119,8 +122,10 @@ Get the latest versions:
 
 ## Features
 
+- **Instant feedback**: File-scoped checks run immediately after each file write
+- **Fast & targeted**: Checks only the changed file, not entire project
+- **Visible announcements**: Clear reporting with 🔍 and ✓/✗ indicators
 - **Combined functionality**: Single plugin with both auto-activated skill and on-demand command
-- **Auto-activation**: Quality checks run automatically when modifying TypeScript files
 - **Architectural review**: Deep `/ts-review` analysis of code structure and design patterns
 - **Cross-project**: Install once, use in any project
 - **Version control**: All plugins are versioned using semantic versioning
@@ -131,10 +136,9 @@ Get the latest versions:
 
 Plugins in this marketplace are designed for projects using:
 
-- **pnpm** workspace structure
+- **pnpm** installed
 - **TypeScript** for type safety
 - **Modern linters** (Biome, ESLint, etc.)
-- **Vitest** or Jest for testing
 
 ## Marketplace Structure
 

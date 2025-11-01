@@ -1,99 +1,96 @@
 ---
 name: ts-quality
-description: Enforce TypeScript quality standards when creating or modifying .ts/.tsx files. Run type checking, linting, building, and testing to ensure code quality before commits. Use when working with TypeScript files, before committing code, or when quality checks are mentioned.
+description: Enforce TypeScript quality standards immediately after writing or modifying .ts/.tsx files. Run type checking and linting on each changed file for instant feedback. Use after creating/editing TypeScript files, or when quality checks, typecheck, lint, or validate are mentioned.
 ---
 
 # TypeScript Quality Enforcement
 
-This skill helps maintain TypeScript code quality by enforcing comprehensive checks before code is considered complete or ready for commit.
+This skill helps maintain TypeScript code quality by running instant checks on each file after it's written or modified.
 
 ## What This Skill Does
 
 When activated, this skill ensures TypeScript code meets quality standards by:
 
-1. **Type Checking** - Runs `pnpm typecheck` to ensure zero TypeScript type errors
-2. **Linting** - Runs `pnpm lint` to enforce code style consistency
-3. **Building** - Runs `pnpm build` to verify successful compilation
+1. **Type Checking** - Runs `pnpm exec tsc --noEmit <file>` to ensure zero TypeScript type errors
+2. **Linting** - Runs `pnpm lint <file>` to enforce code style consistency
 
-All checks must pass with zero errors before code should be committed.
+Checks run on the SPECIFIC FILE that was just written/modified, not the entire project.
 
 ## When to Use This Skill
 
-Activate this skill when:
+Activate this skill:
 
-- Creating new .ts or .tsx files
-- Modifying existing TypeScript files
+- **Immediately after writing or modifying any .ts or .tsx file**
+- After creating new TypeScript files
+- After editing existing TypeScript files
+- When user mentions: "quality checks", "typecheck", "lint", "validate code"
 - Before creating git commits
-- User mentions: "quality checks", "pre-commit", "typecheck", "lint", "validate code"
 - During code review processes
-- Working in pnpm workspace monorepos
 
-## Pre-Commit Quality Standards
+## Quality Standards
 
-**ZERO TOLERANCE POLICY**: No lint errors, type errors, build failures, or test failures are acceptable in commits.
+**ZERO TOLERANCE POLICY**: No lint errors or type errors are acceptable.
 
 ### Required Checks (in sequence):
 
-1. **Type Checking** - `pnpm typecheck`
+1. **Type Checking** - File-scoped typecheck
    - Must pass with zero errors
-   - Validates TypeScript type safety across the codebase
+   - Validates TypeScript type safety for the specific file
 
-2. **Linting** - `pnpm lint`
+2. **Linting** - File-scoped lint
    - Must pass with zero errors
    - Enforces consistent code formatting and style
-
-3. **Building** - `pnpm build`
-   - Must complete successfully
-   - Verifies code compiles without errors
 
 ## Instructions
 
 When this skill is active, follow these steps:
 
-### 1. Identify Working Directory
+### 1. Announce Activation
 
-Determine if you're working in:
-- A specific package subdirectory (e.g., `packages/cli/`)
-- The workspace root
+Immediately inform the user that quality checks are running:
 
-**Best practice**: Run checks in the specific package being modified first for faster feedback.
-
-### 2. Run Quality Checks
-
-Execute checks sequentially using the chained command:
-
-```bash
-pnpm typecheck && pnpm lint && pnpm build
+```
+🔍 Checking {filename}...
 ```
 
-**Important**: Each command must succeed before the next runs. The `&&` operator ensures this.
+Replace `{filename}` with the actual file path (e.g., `src/utils/auth.ts`).
 
-### 3. Handle Results
+### 2. Identify the File to Check
+
+Determine which TypeScript file was just written or modified. This is the file to check.
+
+### 3. Run File-Scoped Quality Checks
+
+Execute checks sequentially on the SPECIFIC FILE ONLY:
+
+```bash
+# Type check the specific file
+pnpm exec tsc --noEmit path/to/file.ts
+
+# Lint the specific file
+pnpm lint path/to/file.ts
+```
+
+**Important**:
+- Only check the file that was written/modified
+- Do NOT run project-wide checks
+- Each command must succeed before the next runs
+
+### 4. Report Results
 
 **If all checks pass:**
-- Report success: "All quality checks passed - code is ready to commit"
-- Proceed with commit or next steps
+Report success clearly:
+```
+✓ {filename}: typecheck and lint passed
+```
 
 **If any check fails:**
-- STOP immediately at the first failure
-- Report the specific error messages
+- Report the specific errors with line numbers
+- Format: `✗ {filename}: found N errors`
+- Show the actual error messages
 - DO NOT proceed to subsequent checks
 - DO NOT allow commits with failing checks
 - Fix the errors before continuing
-
-### 4. Package-First Approach
-
-For faster feedback in monorepos:
-
-```bash
-# First: Run checks in the modified package
-cd packages/your-package
-pnpm typecheck && pnpm lint && pnpm build
-
-# Then: Optionally run workspace-level checks
-cd ../..
-pnpm typecheck && pnpm lint && pnpm build
-```
 
 ## Type Safety Guidelines
 
@@ -117,71 +114,69 @@ pnpm typecheck && pnpm lint && pnpm build
 
 ## Examples
 
-### Example 1: Pre-commit Quality Check
-
-**User**: "Run quality checks before I commit"
-
-**Actions**:
-1. Run `pnpm typecheck`
-   - If successful → continue
-   - If failed → report errors and stop
-2. Run `pnpm lint`
-   - If successful → continue
-   - If failed → report errors and stop
-3. Run `pnpm build`
-   - If successful → continue
-   - If failed → report errors and stop
-
-### Example 2: Creating New TypeScript File
+### Example 1: Creating New TypeScript File
 
 **User**: "Create a new TypeScript component for user authentication"
 
 **Actions**:
 1. Create the file with proper types (explicit parameter and return types)
 2. Avoid using `any` types
-3. After file creation, run quality checks:
-   ```bash
-   pnpm typecheck && pnpm lint
-   ```
-4. Fix any errors immediately
-5. Only consider the task complete when checks pass
+3. After file creation, immediately run quality checks:
+   - Announce: `🔍 Checking src/components/Auth.tsx...`
+   - Run: `pnpm exec tsc --noEmit src/components/Auth.tsx`
+   - Run: `pnpm lint src/components/Auth.tsx`
+   - Report: `✓ src/components/Auth.tsx: typecheck and lint passed`
+4. Only consider the task complete when checks pass
 
-### Example 3: Modifying Existing Code
+### Example 2: Modifying Existing Code
 
 **User**: "Update the session processing logic to handle new event types"
 
 **Actions**:
-1. Make changes maintaining type safety
-2. Run checks in the affected package:
-   ```bash
-   cd packages/session-processing
-   pnpm typecheck && pnpm lint && pnpm build
+1. Make changes to the file maintaining type safety
+2. After saving the file, immediately run quality checks:
+   - Announce: `🔍 Checking packages/session/src/processor.ts...`
+   - Run: `pnpm exec tsc --noEmit packages/session/src/processor.ts`
+   - Run: `pnpm lint packages/session/src/processor.ts`
+   - Report results:
+     - If passed: `✓ packages/session/src/processor.ts: typecheck and lint passed`
+     - If failed: `✗ packages/session/src/processor.ts: found 2 errors` (then show errors)
+
+### Example 3: File with Errors
+
+**User**: Writes a file with type errors
+
+**Actions**:
+1. Announce: `🔍 Checking src/utils/helper.ts...`
+2. Run typecheck: `pnpm exec tsc --noEmit src/utils/helper.ts`
+3. Detect errors and report:
    ```
-3. Verify no new errors introduced
-4. Report results
+   ✗ src/utils/helper.ts: found 3 errors
+
+   src/utils/helper.ts:15:5 - error TS2322: Type 'string' is not assignable to type 'number'.
+   src/utils/helper.ts:22:10 - error TS2339: Property 'foo' does not exist on type 'User'.
+   src/utils/helper.ts:35:3 - error TS2345: Argument of type 'null' is not assignable to parameter of type 'string'.
+   ```
+4. Do NOT proceed to lint
+5. Wait for user to fix errors
 
 ## Integration with pnpm Workspaces
 
-This skill is optimized for pnpm workspace monorepos. It assumes:
+This skill works with pnpm workspace monorepos by checking individual files in their packages.
 
-- Package-level scripts: `typecheck`, `lint`, `build` in each package
-- Workspace-level scripts: Same commands at the root run across all packages
-- Fast feedback: Package-level checks run faster than workspace-level
+File-scoped checks work across packages without needing to change directories.
 
 ## Quick Reference Commands
 
 ```bash
-# Package-level (fast, targeted)
-cd packages/your-package
-pnpm typecheck && pnpm lint && pnpm build
+# File-scoped typecheck (fast, targeted)
+pnpm exec tsc --noEmit path/to/file.ts
 
-# Workspace-level (comprehensive, slower)
-pnpm typecheck && pnpm lint && pnpm build
+# File-scoped lint
+pnpm lint path/to/file.ts
 
-# Individual checks
-pnpm typecheck  # Type checking only
-pnpm lint       # Linting only
-pnpm build      # Build only
+# Both checks in sequence
+pnpm exec tsc --noEmit path/to/file.ts && pnpm lint path/to/file.ts
 ```
 
 ## Error Handling
@@ -190,29 +185,26 @@ When errors occur:
 
 1. **Type Errors**: Show the file, line number, and error message
 2. **Lint Errors**: Show the file, line number, rule violated, and how to fix
-3. **Build Errors**: Show compilation errors with context
 
 Always provide actionable information to help fix the errors.
 
 ## Best Practices
 
+- **Check after every file write** - Instant feedback prevents accumulating errors
 - **Fix errors immediately** - Don't accumulate technical debt
 - **Type errors first** - Must be resolved before linting
-- **Build must succeed** - Before running tests
 - **Never commit failing code** - No exceptions
-- **Package-first** - Check modified package before workspace
+- **File-scoped only** - Don't run project-wide checks
 - **Pragmatic quality** - Focus on correctness, not perfection
 
 ## Requirements
 
 This skill requires projects to have:
 
-- **pnpm** workspace configured
+- **pnpm** installed
 - **TypeScript** installed and configured
 - **Linter** (Biome, ESLint, or similar) configured
-- **Build system** configured (tsup, tsc, vite, etc.)
 
-Package scripts must be defined:
-- `typecheck`: TypeScript type checking
-- `lint`: Code linting
-- `build`: Project build process
+The skill uses:
+- `pnpm exec tsc --noEmit <file>` for type checking
+- `pnpm lint <file>` for linting
