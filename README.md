@@ -154,7 +154,7 @@ claude-plugins/
 │       └── README.md          # User documentation
 ├── commands/                   # Slash commands
 │   └── ts-review/
-│       ├── COMMAND.md         # Command definition with frontmatter
+│       ├── ts-review.md       # Command definition (MUST match command name)
 │       └── README.md          # User documentation
 └── README.md                   # This file
 ```
@@ -223,7 +223,7 @@ claude-plugins/
    mkdir -p commands/new-command
    ```
 
-2. Create `commands/new-command/COMMAND.md` with frontmatter:
+2. Create `commands/new-command/new-command.md` with frontmatter:
    ```markdown
    ---
    name: new-command
@@ -234,6 +234,8 @@ claude-plugins/
 
    Instructions for Claude on how to execute this command...
    ```
+
+   **Important:** The file MUST be named `{command-name}.md` to match the slash command name.
 
 3. Create `commands/new-command/README.md` for users
 
