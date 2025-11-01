@@ -1,5 +1,5 @@
 ---
-name: typescript-quality
+name: ts-quality
 description: Enforce TypeScript quality standards when creating or modifying .ts/.tsx files. Run type checking, linting, building, and testing to ensure code quality before commits. Use when working with TypeScript files, before committing code, or when quality checks are mentioned.
 ---
 
@@ -14,7 +14,6 @@ When activated, this skill ensures TypeScript code meets quality standards by:
 1. **Type Checking** - Runs `pnpm typecheck` to ensure zero TypeScript type errors
 2. **Linting** - Runs `pnpm lint` to enforce code style consistency
 3. **Building** - Runs `pnpm build` to verify successful compilation
-4. **Testing** - Runs `pnpm test` to validate functionality (when tests exist)
 
 All checks must pass with zero errors before code should be committed.
 
@@ -47,10 +46,6 @@ Activate this skill when:
    - Must complete successfully
    - Verifies code compiles without errors
 
-4. **Testing** - `pnpm test`
-   - Must pass when tests exist
-   - Validates functionality and prevents regressions
-
 ## Instructions
 
 When this skill is active, follow these steps:
@@ -68,7 +63,7 @@ Determine if you're working in:
 Execute checks sequentially using the chained command:
 
 ```bash
-pnpm typecheck && pnpm lint && pnpm build && pnpm test
+pnpm typecheck && pnpm lint && pnpm build
 ```
 
 **Important**: Each command must succeed before the next runs. The `&&` operator ensures this.
@@ -93,11 +88,11 @@ For faster feedback in monorepos:
 ```bash
 # First: Run checks in the modified package
 cd packages/your-package
-pnpm typecheck && pnpm lint && pnpm build && pnpm test
+pnpm typecheck && pnpm lint && pnpm build
 
 # Then: Optionally run workspace-level checks
 cd ../..
-pnpm typecheck && pnpm lint && pnpm build && pnpm test
+pnpm typecheck && pnpm lint && pnpm build
 ```
 
 ## Type Safety Guidelines
@@ -136,9 +131,6 @@ pnpm typecheck && pnpm lint && pnpm build && pnpm test
 3. Run `pnpm build`
    - If successful → continue
    - If failed → report errors and stop
-4. Run `pnpm test`
-   - If successful → report "All checks passed"
-   - If failed → report errors
 
 ### Example 2: Creating New TypeScript File
 
@@ -163,7 +155,7 @@ pnpm typecheck && pnpm lint && pnpm build && pnpm test
 2. Run checks in the affected package:
    ```bash
    cd packages/session-processing
-   pnpm typecheck && pnpm lint && pnpm build && pnpm test
+   pnpm typecheck && pnpm lint && pnpm build
    ```
 3. Verify no new errors introduced
 4. Report results

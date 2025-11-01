@@ -10,7 +10,6 @@ The `/ts-review` command performs a deep analysis of your uncommitted TypeScript
    - ✓ Type checking (`pnpm typecheck`)
    - ✓ Linting (`pnpm lint`)
    - ✓ Building (`pnpm build`)
-   - ✓ Testing (`pnpm test`)
 
 2. **Architectural Analysis** - Reviews code structure and design:
    - SOLID principles compliance

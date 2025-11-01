@@ -12,12 +12,12 @@ This marketplace provides reusable Claude Code skills and slash commands focused
 
 ## What's Included
 
-### Skills (Auto-Activated)
-
-Skills run automatically based on context (e.g., when you modify TypeScript files).
-
-#### `typescript-quality` - TypeScript Quality Enforcement
+### `ts-quality` - TypeScript Quality Plugin
 **Version:** 1.0.0
+
+A comprehensive TypeScript quality plugin that includes both an auto-activated skill and an on-demand architectural review command.
+
+#### Auto-Activated Skill
 
 Automatically enforces TypeScript quality standards when creating or modifying `.ts`/`.tsx` files.
 
@@ -32,19 +32,14 @@ Automatically enforces TypeScript quality standards when creating or modifying `
 - Before git commits
 - When quality checks are mentioned
 
-**Documentation:** [skills/typescript-quality/README.md](./skills/typescript-quality/README.md)
+**Documentation:** [plugins/ts-quality/skills/README.md](./plugins/ts-quality/skills/README.md)
 
-### Commands (Manual Invocation)
-
-Slash commands you invoke explicitly for specific tasks.
-
-#### `/ts-review` - TypeScript Architectural Review
-**Version:** 1.0.0
+#### `/ts-review` Command
 
 Performs comprehensive architectural review of uncommitted TypeScript code.
 
 **What it does:**
-1. Runs all quality checks (same as `typescript-quality` skill)
+1. Runs all quality checks (same as the auto-activated skill)
 2. Analyzes architecture: SOLID principles, design patterns, code structure
 3. Reviews type safety, error handling, testability
 4. Provides concrete, pragmatic suggestions with examples
@@ -60,7 +55,7 @@ Performs comprehensive architectural review of uncommitted TypeScript code.
 - For architectural guidance on new features
 - To get concrete improvement suggestions
 
-**Documentation:** [commands/ts-review/README.md](./commands/ts-review/README.md)
+**Documentation:** [plugins/ts-quality/commands/README.md](./plugins/ts-quality/commands/README.md)
 
 ## Installation
 
@@ -88,19 +83,17 @@ See what's available in this marketplace:
 
 This shows all available skills and commands from registered marketplaces.
 
-### Step 3: Install What You Need
+### Step 3: Install the Plugin
 
-Install individual skills or commands:
+Install the ts-quality plugin (includes both skill and command):
 
 ```bash
-# Install the TypeScript quality skill
-/plugin install typescript-quality@cliftonc-plugins
-
-# Install the TypeScript review command
-/plugin install ts-review@cliftonc-plugins
+/plugin install ts-quality@cliftonc-plugins
 ```
 
-Once installed, skills auto-activate based on context, and commands are available via their slash command (e.g., `/ts-review`).
+Once installed:
+- The skill auto-activates when you work with TypeScript files
+- The `/ts-review` command is available for architectural review
 
 ## Managing Plugins
 
@@ -121,21 +114,22 @@ Get the latest versions:
 ### Remove a Plugin
 
 ```bash
-/plugin remove typescript-quality
-/plugin remove ts-review
+/plugin remove ts-quality
 ```
 
 ## Features
 
-- **Auto-activation**: Skills activate automatically based on context
+- **Combined functionality**: Single plugin with both auto-activated skill and on-demand command
+- **Auto-activation**: Quality checks run automatically when modifying TypeScript files
+- **Architectural review**: Deep `/ts-review` analysis of code structure and design patterns
 - **Cross-project**: Install once, use in any project
-- **Version control**: All skills are versioned using semantic versioning
-- **Zero dependencies**: Skills work with your existing tools
+- **Version control**: All plugins are versioned using semantic versioning
+- **Zero dependencies**: Plugins work with your existing tools
 - **Quality-focused**: Promotes best practices and clean code
 
 ## Requirements
 
-Skills in this marketplace are designed for projects using:
+Plugins in this marketplace are designed for projects using:
 
 - **pnpm** workspace structure
 - **TypeScript** for type safety
@@ -147,118 +141,118 @@ Skills in this marketplace are designed for projects using:
 ```
 claude-plugins/
 ├── .claude-plugin/
-│   └── marketplace.json       # Marketplace configuration
-├── skills/                     # Auto-activated skills
-│   └── typescript-quality/
-│       ├── SKILL.md           # Skill definition with frontmatter
-│       └── README.md          # User documentation
-├── commands/                   # Slash commands
-│   └── ts-review/
-│       ├── ts-review.md       # Command definition (MUST match command name)
-│       └── README.md          # User documentation
-└── README.md                   # This file
+│   └── marketplace.json              # Marketplace configuration
+├── plugins/                           # Plugin directory
+│   └── ts-quality/                    # Single plugin with both skill and command
+│       ├── .claude-plugin/
+│       │   └── plugin.json           # Plugin manifest (REQUIRED)
+│       ├── commands/                  # Slash commands
+│       │   ├── ts-review.md          # /ts-review command
+│       │   └── README.md
+│       └── skills/                    # Auto-activated skills
+│           ├── ts-quality/
+│           │   └── SKILL.md          # Skill definition
+│           └── README.md
+└── README.md                          # This file
 ```
 
 ## Development
 
-### Adding New Skills
+### Adding New Plugins
 
-1. Create skill directory:
-   ```bash
-   mkdir -p skills/new-skill-name
-   ```
+Each plugin requires a plugin wrapper with a `plugin.json` manifest. Plugins can contain skills, commands, or both.
 
-2. Create `skills/new-skill-name/SKILL.md` with frontmatter:
-   ```markdown
-   ---
-   name: new-skill-name
-   description: Brief description of when and how the skill activates
-   ---
+**1. Create plugin structure:**
+```bash
+mkdir -p plugins/my-plugin/.claude-plugin
+mkdir -p plugins/my-plugin/skills/my-skill  # If adding a skill
+mkdir -p plugins/my-plugin/commands          # If adding a command
+```
 
-   # Skill Title
+**2. Create plugin.json (REQUIRED):**
+```json
+{
+  "name": "my-plugin",
+  "description": "What this plugin does",
+  "version": "1.0.0",
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com"
+  },
+  "homepage": "https://github.com/your-username/your-repo",
+  "keywords": ["keyword1", "keyword2"],
+  "skills": ["skills/my-skill"],      // Optional: if plugin has skills
+  "commands": "./commands/"            // Optional: if plugin has commands
+}
+```
 
-   Instructions for Claude on how to use this skill...
-   ```
+**3. Add skill (if needed):**
 
-3. Create `skills/new-skill-name/README.md` for users
+Create `plugins/my-plugin/skills/my-skill/SKILL.md`:
+```markdown
+---
+name: my-skill
+description: When and how this skill activates
+---
 
-4. Update `.claude-plugin/marketplace.json`:
-   ```json
-   {
-     "plugins": [
-       {
-         "name": "new-skill-name",
-         "source": "./skills/new-skill-name",
-         "description": "...",
-         "version": "1.0.0",
-         "author": {...},
-         "keywords": [...]
-       }
-     ]
-   }
-   ```
+# Skill Title
+Instructions for Claude...
+```
 
-5. Test locally:
-   ```bash
-   /plugin marketplace add ~/work/claude-plugins
-   /plugin install new-skill-name@cliftonc-plugins
-   ```
+**4. Add command (if needed):**
 
-6. Commit and push:
-   ```bash
-   git add .
-   git commit -m "feat: add new-skill-name v1.0.0"
-   git push origin main
-   ```
+Create `plugins/my-plugin/commands/my-command.md`:
+```markdown
+---
+name: my-command
+description: What this command does
+---
 
-7. Users update with:
-   ```bash
-   /plugin marketplace update
-   ```
+# Command Title
+Instructions for Claude...
+```
 
-### Adding New Commands
+**Important:** Command filename MUST match the command name (e.g., `my-command.md` for `/my-command`).
 
-1. Create command directory:
-   ```bash
-   mkdir -p commands/new-command
-   ```
+**5. Update marketplace.json:**
+```json
+{
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "source": "./plugins/my-plugin",
+      "description": "What this plugin does",
+      "version": "1.0.0",
+      "author": {...},
+      "keywords": [...]
+    }
+  ]
+}
+```
 
-2. Create `commands/new-command/new-command.md` with frontmatter:
-   ```markdown
-   ---
-   name: new-command
-   description: What this command does
-   ---
+**6. Test locally:**
+```bash
+/plugin marketplace add ~/work/claude-plugins
+/plugin install my-plugin@cliftonc-plugins
+```
 
-   # Command Title
+**7. Commit and push:**
+```bash
+git add .
+git commit -m "feat: add my-plugin v1.0.0"
+git push origin main
+```
 
-   Instructions for Claude on how to execute this command...
-   ```
+**8. Users update:**
+```bash
+/plugin marketplace update
+```
 
-   **Important:** The file MUST be named `{command-name}.md` to match the slash command name.
+### Updating Existing Plugins
 
-3. Create `commands/new-command/README.md` for users
-
-4. Update `.claude-plugin/marketplace.json` `plugins` array (add to the same array as skills)
-
-5. Test locally:
-   ```bash
-   /plugin marketplace add ~/work/claude-plugins
-   /plugin install new-command@cliftonc-plugins
-   ```
-
-6. Commit and push:
-   ```bash
-   git add .
-   git commit -m "feat: add new-command v1.0.0"
-   git push origin main
-   ```
-
-### Updating Existing Skills or Commands
-
-1. Modify the SKILL.md or COMMAND.md file
+1. Modify skill or command files in `plugins/plugin-name/`
 2. Update README.md if user-facing changes
-3. Bump version in `marketplace.json`
+3. Bump version in both `plugin.json` and `marketplace.json`
 4. Commit with semantic versioning message:
    ```bash
    git commit -m "feat: add new feature (v1.1.0)"
@@ -267,7 +261,7 @@ claude-plugins/
 
 ## Versioning
 
-All skills use semantic versioning (MAJOR.MINOR.PATCH):
+All plugins use semantic versioning (MAJOR.MINOR.PATCH):
 
 - **MAJOR**: Breaking changes to skill behavior
 - **MINOR**: New features, backward compatible

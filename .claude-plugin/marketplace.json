@@ -10,26 +10,15 @@
   },
   "plugins": [
     {
-      "name": "typescript-quality",
-      "source": "./skills/typescript-quality",
-      "description": "Enforces TypeScript quality standards: type checking, linting, building, and testing before commits. Use when working with TypeScript files or before committing code.",
+      "name": "ts-quality",
+      "source": "./plugins/ts-quality",
+      "description": "TypeScript quality enforcement with automated checks and architectural review. Includes auto-activated quality skill and /ts-review command for comprehensive code analysis.",
       "version": "1.0.0",
       "author": {
         "name": "Clifton Cunningham",
         "email": "clifton.cunningham@gmail.com"
       },
-      "keywords": ["typescript", "quality", "testing", "linting", "typecheck", "pre-commit"]
-    },
-    {
-      "name": "ts-review",
-      "source": "./commands/ts-review",
-      "description": "Performs architectural review of uncommitted TypeScript code with quality checks and pragmatic improvement suggestions. Analyzes SOLID principles, design patterns, code structure, type safety, and provides concrete recommendations.",
-      "version": "1.0.0",
-      "author": {
-        "name": "Clifton Cunningham",
-        "email": "clifton.cunningham@gmail.com"
-      },
-      "keywords": ["typescript", "architecture", "review", "refactoring", "solid", "design-patterns", "code-quality"]
+      "keywords": ["typescript", "quality", "testing", "linting", "typecheck", "pre-commit", "architecture", "review", "refactoring", "solid", "design-patterns", "code-quality"]
     }
   ]
 }
