@@ -31,22 +31,36 @@ Run this command before committing TypeScript changes to ensure both quality and
 
 When this command is invoked, follow these steps:
 
-### 1. Identify Uncommitted TypeScript Files
+### 1. Get All Uncommitted TypeScript Changes
 
-Use git to find uncommitted changes:
-
-```bash
-git diff --name-only HEAD | grep -E '\.(ts|tsx)$'
-```
-
-Also check for untracked TypeScript files:
+Use `git diff` to get all uncommitted TypeScript changes efficiently:
 
 ```bash
+# Get diff for staged and unstaged changes (excluding untracked files)
+git diff HEAD -- '*.ts' '*.tsx'
+
+# Also check for untracked TypeScript files
 git ls-files --others --exclude-standard | grep -E '\.(ts|tsx)$'
 ```
 
-If no TypeScript files are uncommitted, report this and exit:
-- "No uncommitted TypeScript files found. Nothing to review."
+**Check diff size:**
+```bash
+# Count lines in the diff
+git diff HEAD -- '*.ts' '*.tsx' | wc -l
+```
+
+**If no changes found:**
+- Report: "No uncommitted TypeScript files found. Nothing to review."
+- Exit
+
+**If diff is larger than 1000 lines:**
+- Report: "Large changeset detected (X lines). Reviewing in batches for better analysis."
+- List all changed TypeScript files
+- Ask user which files to review, or offer to review them one at a time
+- Process in manageable chunks (suggested: ~300 lines per batch)
+
+**If diff is 1000 lines or less:**
+- Proceed with full review using the complete diff output
 
 ### 2. Run Quality Checks (ZERO TOLERANCE)
 
@@ -65,11 +79,28 @@ pnpm typecheck && pnpm lint && pnpm build
 - Report: "✓ All quality checks passed"
 - Proceed to architectural review
 
-### 3. Read Uncommitted Files
+### 3. Analyze Changes from Git Diff
 
-For each uncommitted TypeScript file:
-- Use the Read tool to load the entire file contents
-- Build context about what the code does
+**Use the git diff output directly** - this is more efficient than reading files individually:
+
+```bash
+# Get the actual diff with context
+git diff HEAD -- '*.ts' '*.tsx'
+```
+
+The diff output shows:
+- Which files changed
+- Exact line changes (additions/deletions)
+- Context around each change
+
+**For untracked files** (if any were found in step 1):
+- Use the Read tool only for these new files
+- These don't have diff output since they're completely new
+
+**Build understanding:**
+- Focus review on the changed lines and their context
+- Understand what functionality is being added/modified
+- Identify architectural patterns in the changes
 
 ### 4. Perform Architectural Review
 
